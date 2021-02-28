@@ -5,26 +5,35 @@ import Person from "./Person/Person";
 class App extends Component {
   state = {
     persons: [
-      { name: "Chotu", age: 24 },
-      { name: "Daxeel", age: 22 },
-      { name: "Hemil", age: 26 },
+      { id:"1", name: "Chotu", age: 24 },
+      { id:"2", name: "Daxeel", age: 22 },
+      { id:"3", name: "Hemil", age: 26 },
     ],
     showPersons: false,
   };
 
   // React pass the event object by default
-  nameChangeHandler = (event) => {
-    this.setState({
-      persons: [
-        { name: "Chotu", age: 24 },
-        { name: event.target.value, age: 25 },
-        { name: "Hemil", age: 290 },
-      ],
-    });
+  nameChangeHandler = (event, id) => {
+    const persons = [...this.state.persons] // getting the copy of persons
+    // Getting the index for the person we want to undate
+    const personObjectIndex = persons.findIndex((p) => {
+      return p.id = id;
+    })
+    // getting the personObject with index
+    const person = {
+      ...this.state.persons[[personObjectIndex]],
+    }
+    // Binding the name target value
+    person.name = event.target.value;
+
+    // Assignging the updated person in the arrey of functions
+    persons[personObjectIndex] = person;
+    // Updating state
+    this.setState({persons})
   };
 
   deletePersonHandler = (personIndex) => {
-    const persons = this.state.persons
+    const persons = [...this.state.persons]
     persons.splice(personIndex,1)
     this.setState({persons})
   }
@@ -53,6 +62,8 @@ class App extends Component {
               name={person.name} 
               age={person.age} 
               click={()=> this.deletePersonHandler(index)}
+              key={person.id}
+              change={(event) => this.nameChangeHandler(event, person.id)}
               />;
           })}
         </div>
